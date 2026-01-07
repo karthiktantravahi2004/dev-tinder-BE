@@ -15,7 +15,20 @@ app.post("/signup", async (req, res) => {
     await user.save();
     res.send("User added Succesfully");
   } catch (err) {
-    res.status(400).send("Error saving the data Error: " + err.message);
+    res
+      .status(400)
+      .send("Error saving the data Error: " + err.message + "OOOOPS");
+  }
+});
+
+app.get("/user", async (req, res) => {
+  const userFirstName = req.query.firstName;
+
+  try {
+    const user = await User.find({ firstName: userFirstName });
+    res.send(user);
+  } catch (err) {
+    res.status(500).send("Something went wrong");
   }
 });
 
