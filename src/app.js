@@ -22,11 +22,25 @@ app.post("/signup", async (req, res) => {
 });
 
 app.get("/user", async (req, res) => {
-  const userFirstName = req.query.firstName;
+  const userEmail = req.query.eMailId;
 
   try {
-    const user = await User.find({ firstName: userFirstName });
+    const user = await User.find({ eMailId: userEmail });
+
+    if (user.length === 0) {
+      return res.status(404).send("User not found");
+    }
+
     res.send(user);
+  } catch (err) {
+    res.status(500).send("Something went wrong");
+  }
+});
+
+app.get("/feed", async (req, res) => {
+  try {
+    const users = await User.find({});
+    res.send(users);
   } catch (err) {
     res.status(500).send("Something went wrong");
   }
