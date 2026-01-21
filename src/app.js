@@ -46,6 +46,29 @@ app.get("/feed", async (req, res) => {
   }
 });
 
+app.delete("/user", async (req, res) => {
+  const userId = req.body.userId;
+  try {
+    //const user = await user.findByIdAndDelete({ userId: UserId });
+    const user = await User.findByIdAndDelete(userId);
+    res.send("user deleted Succesfully");
+  } catch (err) {
+    res.status(500).send("Something went wrong");
+  }
+});
+
+app.patch("/user", async (req, res) => {
+  //const userId = req.body.userId;
+  const userEmail = req.body.eMailId;
+  const data = req.body;
+  try {
+    await User.findOneAndUpdate({ eMailId: userEmail }, data);
+    res.send("USer Updated Succesfully");
+  } catch (err) {
+    res.status(500).send("Something went wrong");
+  }
+});
+
 connectDB()
   .then(() => {
     console.log("Database Connection Succesfully Established");
