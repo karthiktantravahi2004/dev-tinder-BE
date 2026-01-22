@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const validator = require("validator");
 
 const userSchema = new mongoose.Schema(
   {
@@ -20,11 +21,19 @@ const userSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
       trim: true,
+      validate(value) {
+        if (!validator.isEmail(value)) {
+          throw new Error("Invalid Email Address " + value);
+        }
+      },
     },
     password: {
       type: String,
-      minLength: 7,
-      trim: true,
+      validate(value) {
+        if (!validator.isStrongPassword(value)) {
+          throw new Error("Enter a Strong Password " + value);
+        }
+      },
     },
     age: {
       type: Number,
@@ -42,6 +51,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       default:
         "https://brahmaputravalleyfilmfestival.com/wp-content/uploads/2017/03/Dummy-Profile-Picture.jpg",
+      validate(value) {
+        if (!validator.isURL(value)) {
+          throw new Error("Invalid photo URL " + value);
+        }
+      },
     },
     about: {
       type: String,
