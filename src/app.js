@@ -58,14 +58,18 @@ app.delete("/user", async (req, res) => {
 });
 
 app.patch("/user", async (req, res) => {
-  //const userId = req.body.userId;
-  const userEmail = req.body.eMailId;
+  const userId = req.body.userId;
+  //const userEmail = req.body.eMailId;
   const data = req.body;
   try {
-    await User.findOneAndUpdate({ eMailId: userEmail }, data);
+    const user = await User.findOneAndUpdate({ _id: userId }, data, {
+      returnDocument: "after",
+      runValidators: true,
+    });
+    console.log(user);
     res.send("USer Updated Succesfully");
   } catch (err) {
-    res.status(500).send("Something went wrong");
+    res.status(500).send("Update Failed " + err.message);
   }
 });
 
