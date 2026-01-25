@@ -29,4 +29,37 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
     res.status(400).send("ERROR : " + err.message);
   }
 });
+
+profileRouter.patch("/profile/password", userAuth, async (req, res) => {
+  try {
+    const { oldPassword, newPassword } = req.body;
+
+    if (!oldPassword || !newPassword) {
+      throw new Error("Old password and new password are required");
+    }
+
+    const loggedInUser = req.user;
+
+    const bcrypt = require("bcrypt");
+
+    const isOldPasswordCorrect = await bcrypt.compare(
+      oldPassword,
+      loggedInUser.password,
+    );
+
+    if (!isOldPasswordCorrect) {
+      throw new Error("Old password is incorrect");
+    }
+
+    const newHashedPassword = await bcrypt.hash(newPassword, 10);
+
+    loggedInUser.password = newHashedPassword;
+    await loggedInUser.save();
+
+    res.send("Password updated successfully");
+  } catch (err) {
+    res.status(400).send("ERROR : " + err.message);
+  }
+});
+
 module.exports = profileRouter;
